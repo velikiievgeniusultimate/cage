@@ -1,6 +1,6 @@
 [wrap-git]
 url = https://gitlab.freedesktop.org/ayasa0520/wlroots.git
-revision = 90d1227391f4ee9ed48bbfb101800379fbebfc94
+revision = 7a92184b6d89733999804cc487a31222ab2469fd
 clone-recursive = true
 
 [provide]
