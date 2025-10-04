@@ -42,7 +42,6 @@ jobs:
           libudev-dev \
           libseat-dev \
           libinput-dev \
-          libdrm-dev \
           libexpat1-dev \
           libcap-dev \
           libsystemd-dev \
@@ -69,8 +68,7 @@ jobs:
           libvulkan-dev \
           vulkan-tools \
           spirv-tools \
-          glslang-tools \
-          hwdata
+          glslang-tools
 
     - name: Setup Python venv and install meson
       run: |
@@ -87,7 +85,7 @@ jobs:
           --buildtype=debug \
           -Dwerror=false \
           -Dc_link_args='-lstdc++' \
-          -Dwlroots:backends=drm,libinput,x11
+          -Dwlroots:backends=libinput,x11
         meson compile -C build
 
     - name: Upload build artifact
