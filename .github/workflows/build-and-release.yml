@@ -13,9 +13,9 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        os: [ubuntu-latest, ubuntu-24.04-arm]
+        os: [ubuntu-22.04, ubuntu-24.04-arm]
         include:
-          - os: ubuntu-latest
+          - os: ubuntu-22.04
             arch: amd64
           - os: ubuntu-24.04-arm
             arch: arm64
@@ -32,9 +32,9 @@ jobs:
         sudo apt install \
           build-essential \
           g++ \
-          libstdc++-13-dev \
-          meson \
           ninja-build \
+          python3-pip \
+          python3-venv \
           libxkbcommon-dev \
           libegl-dev \
           libgbm-dev \
@@ -65,15 +65,28 @@ jobs:
           libxcb-xinput-dev \
           libx11-dev \
           libx11-xcb-dev \
-          liblzma-dev
+          liblzma-dev \
+          libvulkan-dev \
+          vulkan-tools \
+          spirv-tools \
+          glslang-tools \
+          hwdata
+
+    - name: Setup Python venv and install meson
+      run: |
+        python3 -m venv venv
+        source venv/bin/activate
+        pip install meson
+        echo "$GITHUB_WORKSPACE/venv/bin" >> $GITHUB_PATH
 
     - name: Build with meson
       run: |
-        CC=gcc CXX=g++ LDFLAGS='-lstdc++' meson setup build \
+        meson setup build \
           --default-library=static \
           --prefer-static \
-          --buildtype=release \
+          --buildtype=debug \
           -Dwerror=false \
+          -Dc_link_args='-lstdc++' \
           -Dwlroots:backends=drm,libinput,x11
         meson compile -C build
 
@@ -85,7 +98,7 @@ jobs:
 
   release:
     needs: build
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     if: github.ref == 'refs/heads/waydroid-helper'
 
     steps:
