@@ -75,6 +75,9 @@ extern int32_t wlr_wl_refresh_rate;
 // External global variable for X11 backend (defined in wlroots)
 extern bool wlr_x11_hide_titlebar;
 
+// External global variable for pointer confinement control (used by both backends)
+extern bool wlr_auto_confine_pointer;
+
 void
 server_terminate(struct cg_server *server)
 {
@@ -256,6 +259,7 @@ usage(FILE *file, const char *cage)
 		" --refresh-rate HZ\t Set refresh rate in Hz (e.g., 60, 165)\n"
 		" --allow-resize\t Allow window resizing and sync logical resolution with window size\n"
 		" --hide-titlebar\t Hide window title bar (X11 backend only)\n"
+		" --confine-pointer\t Confine pointer to window when focused\n"
 		"\n"
 		" Use -- when you want to pass arguments to APPLICATION\n",
 		cage);
@@ -272,6 +276,7 @@ parse_args(struct cg_server *server, int argc, char *argv[])
 		{"allow-resize", no_argument, 0, 1002},
 		{"hide-titlebar", no_argument, 0, 1003},
 		{"refresh-rate", required_argument, 0, 1004},
+		{"confine-pointer", no_argument, 0, 1005},
 		{0, 0, 0, 0}
 	};
 
@@ -350,6 +355,9 @@ parse_args(struct cg_server *server, int argc, char *argv[])
 				fprintf(stderr, "Invalid refresh rate: %s\n", optarg);
 				return false;
 			}
+			break;
+		case 1005: // --confine-pointer
+			wlr_auto_confine_pointer = true;
 			break;
 		default:
 			usage(stderr, argv[0]);
