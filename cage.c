@@ -258,7 +258,7 @@ usage(FILE *file, const char *cage)
 		" --scale SCALE\t Set scaling factor (e.g., 1.5, 2.0)\n"
 		" --refresh-rate HZ\t Set refresh rate in Hz (e.g., 60, 165)\n"
 		" --allow-resize\t Allow window resizing and sync logical resolution with window size\n"
-		" --hide-titlebar\t Hide window title bar (X11 backend only)\n"
+		" --hide-titlebar\t Hide window title bar (X11 backend only; default)\n"
 		" --confine-pointer\t Confine pointer to window when focused\n"
 		"\n"
 		" Use -- when you want to pass arguments to APPLICATION\n",
@@ -379,6 +379,10 @@ main(int argc, char *argv[])
 #ifdef DEBUG
 	server.log_level = WLR_DEBUG;
 #endif
+
+	/* Default to frameless when running nested (X11/Wayland backends). */
+	wlr_x11_hide_titlebar = true;
+	wlr_wl_allow_resize = false;
 
 	if (!parse_args(&server, argc, argv)) {
 		return 1;
